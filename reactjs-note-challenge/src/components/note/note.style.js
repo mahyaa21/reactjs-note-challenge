@@ -141,7 +141,7 @@ export const DeleteButton = styled(ActionButton)`
     margin: 5px;
     width: 130px;
     height: 35px;
-    display: ${props => props.index ? 'block' : 'none'};
+    display: ${props => props.open ? 'block' : 'none'};
     &:hover{
         background-color: #9F2B00;
         box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.2);
