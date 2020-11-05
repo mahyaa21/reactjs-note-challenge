@@ -49,7 +49,7 @@ const _NoteList = (props: Props) => {
     }
     return <NoteListContainer>
         {NOTES.map((note, index) => {
-            return <NoteListBox key={index}>
+            return <NoteListBox key={index} onClick={() => { DelButton(index) }}>
                 <NoteBoxTitle>{note.title}</NoteBoxTitle>
                 <NotesBoxContent>{note.content}</NotesBoxContent>
                 <DoteWrapper onClick={() => { DelButton(index) }}>
