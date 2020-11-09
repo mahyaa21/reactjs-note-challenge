@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { connect } from "react-redux";
 import {
     getNoteList,
-  } from "../../redux/Actions";
+} from "../../redux/Actions";
+import { discardNote } from '../../api/Srvc/noteSrvc';
 import {
     NoteListContainer,
     NoteListBox,
@@ -36,16 +37,19 @@ const NOTES = [
 ]
 const _NoteList = (props: Props) => {
     const [deleteNote, setDeleteNote] = useState(false);
-    const [delButtonNumber,setDelButtonNumber] = useState('');
+    const [delButtonNumber, setDelButtonNumber] = useState('');
     useEffect(() => {
         fetch();
-      }, []);
+    }, []);
     const fetch = () => {
-        props.getNoteList();
-    }  
+        props.getNoteList(props.userInfo);
+    }
     const DelButton = (index) => {
         (deleteNote) ? setDeleteNote(false) : setDeleteNote(true);
-        setDelButtonNumber(index)
+        setDelButtonNumber(index);
+    }
+    const removeNote = (id) => {
+        discardNote(id);
     }
     return <NoteListContainer>
         {NOTES.map((note, index) => {
@@ -56,22 +60,23 @@ const _NoteList = (props: Props) => {
                     <Dote />
                     <Dote />
                     <Dote />
-                    <DeleteButton  open={(delButtonNumber == index && deleteNote) ? true : false}>Delete</DeleteButton>
-                </DoteWrapper> 
+                    <DeleteButton open={(delButtonNumber == index && deleteNote) ? true : false} onClick={() => { removeNote(note.id) }}>Delete</DeleteButton>
+                </DoteWrapper>
             </NoteListBox>
         })}
-    </NoteListContainer>
+    </NoteListContainer >
 }
 const mapDispatchToProps = dispatch => {
     return {
-      getNoteList: () => dispatch(getNoteList()),
+        getNoteList: (data) => dispatch(getNoteList(data)),
     };
-  };
+};
 const mapStateToProps = (state, props) => {
     return {
-      notes: state.notes
+        notes: state.note,
+        userInfo: state.user
     };
-  };
-  
+};
+
 const NoteList = connect(mapStateToProps, mapDispatchToProps)(_NoteList)
 export default NoteList;

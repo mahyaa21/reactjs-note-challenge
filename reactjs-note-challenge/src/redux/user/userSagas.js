@@ -1,6 +1,7 @@
 import {
     put,
     takeLatest,
+    takeEvery,
     call,
 } from "redux-saga/effects";
 
@@ -10,23 +11,18 @@ import {
     LOAD_USER_INFO_FAILURE
 } from './userActionTypes';
 
-import userSrvc from "../../api/Srvc/userSrvc";
-// const postsApi = new userSrvc;
-function loginUser() {
-    const request = userSrvc.loginUser();
-    return request;
-}
+import { loginUser } from "../../api/Srvc/userSrvc";
 
 function* loadLoginUser(action) {
-    console.log(action);
     try {
-        const res = yield call(loginUser, action.data);
-        console.log(action.data, res)
+        const res = yield call(loginUser);
+        console.log('reess', res.data.token);
         yield put({
             type: LOAD_USER_INFO_SUCCESS,
-            data: { payload: res.data, params: action }
+            data: { payload: res.data.token }
         });
     } catch (error) {
+        console.log(error)
         yield put({
             type: LOAD_USER_INFO_FAILURE,
             error: error

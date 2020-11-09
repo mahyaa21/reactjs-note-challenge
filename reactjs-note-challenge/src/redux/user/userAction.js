@@ -1,8 +1,8 @@
 import {
-    LOAD_USER_INFO,
+    LOAD_USER_INFO, 
   } from "./userActionTypes";
   
-  export const loginUser = data => ({
+  export const loginUserAction = data => ({
     type: LOAD_USER_INFO,
     data: data
   });

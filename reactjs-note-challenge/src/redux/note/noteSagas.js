@@ -10,12 +10,8 @@ import {
     LOAD_NOTE_LIST_FAILURE
 } from './noteActionTypes';
 
-import NoteSrvc from "../../api/Srvc/noteSrvc";
+import { getNoteList } from "../../api/Srvc/noteSrvc";
 
-function getNoteList() {
-    const request = NoteSrvc.getNoteList();
-    return request;
-}
 
 function* loadNoteList(action) {
     try {
@@ -37,7 +33,6 @@ function* loadNoteListWatcher() {
 
 export default function () {
     return [
-      loadNoteListWatcher(),
+        loadNoteListWatcher(),
     ];
-  }
-  
+}

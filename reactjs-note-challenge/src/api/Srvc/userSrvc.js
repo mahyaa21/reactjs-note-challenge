@@ -1,23 +1,14 @@
 import axios from 'axios';
-function api() {
-    return {
-        loginUser: (data: any) => {
-            const options = {
-                data: {
-                    email: 'mahyaka12@gmail.com',
-                    password: '123456789'
-                }
-            }
-            const url = 'https://challenge.pushe.co/api/v1/auth/token';
-            const requestConfig: RequestConfig = {
-                headers: {
-                    'Authorization': `jwt ${data.token}`
-                },
-            };
-            let instance = axios.create(requestConfig);
-            return  instance.post(url, data, { ...requestConfig, ...options })
-        }
-    };
-
+export const loginUser = async () => {
+    try {
+        const response = await axios.post("https://challenge.pushe.co/api/v1/auth/token", {
+            email: 'mahyaka12@gmail.com',
+            password: '123456789'
+        });
+        const data = await response;
+        console.log('user srvc', data)
+        return data;
+    } catch (e) {
+        console.log(e)
+    }
 }
-export default api();

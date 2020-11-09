@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from "react-redux";
 import {
-    loginUser,
+    loginUserAction,
 } from "../../redux/Actions";
+import axios from 'axios';
 import {
     HeaderContainer,
     ButtonWrapper,
@@ -15,8 +16,20 @@ const _Header = (props: Props) => {
     useEffect(() => {
         fetch();
     }, []);
-    const fetch = () => {
-        props.loginUser({token: props.userInfo});
+    const fetch = async () => {
+        try {
+            const response = await axios.post("https://challenge.pushe.co/api/v1/auth/token", {
+                email: 'mahyaka12@gmail.com',
+                password: '123456789'
+            });
+            const data = await response;
+            console.log('header', data.data.token, props.loginUserAction({ payload: data.data.token }))
+            props.loginUserAction({ payload: data.data.token })
+            return data;
+        } catch (e) {
+            console.log(e)
+        }
+
     }
     return <HeaderContainer>
         <HeaderDiv></HeaderDiv>
@@ -29,14 +42,12 @@ const _Header = (props: Props) => {
 }
 const mapDispatchToProps = dispatch => {
     return {
-        loginUser: (data) => dispatch(loginUser(data)),
+        loginUserAction: (data) => dispatch(loginUserAction(data)),
     };
 };
 const mapStateToProps = (state, props) => {
     return {
-        userInfo: {
-            user: state.userInfo
-        }
+        userInfo: state.user
     };
 };
 

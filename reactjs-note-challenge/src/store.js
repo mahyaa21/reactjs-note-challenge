@@ -15,6 +15,7 @@ const composeEnhancers =
             // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
         }) : compose;
 
+
 const enhancer = composeEnhancers(
     applyMiddleware(sagaMiddleware),
     // other store enhancers if any
@@ -27,4 +28,4 @@ export const store = createStore(
 )
 sagaMiddleware.run(rootSaga)
 
-export default store;
+// export default store;
