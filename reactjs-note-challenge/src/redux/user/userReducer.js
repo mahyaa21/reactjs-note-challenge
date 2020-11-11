@@ -3,12 +3,12 @@ import {
     LOAD_USER_INFO_SUCCESS,
 } from "./userActionTypes";
 
-const UserReducer = function (
+const UserReducer =  (
     state = {
         userInfo: '',
     },
     action = {}
-) {
+) => {
     switch (action.type) {
         case LOAD_USER_INFO:
             return Object.assign({}, state, {

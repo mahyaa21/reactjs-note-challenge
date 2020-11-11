@@ -16,7 +16,6 @@ import { loginUser } from "../../api/Srvc/userSrvc";
 function* loadLoginUser(action) {
     try {
         const res = yield call(loginUser);
-        console.log('reess', res.data.token);
         yield put({
             type: LOAD_USER_INFO_SUCCESS,
             data: { payload: res.data.token }
