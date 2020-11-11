@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from "react-redux";
+import axios from 'axios';
+import { connect, useStore } from "react-redux";
 import {
     getNoteList,
 } from "../../redux/Actions";
@@ -38,21 +39,43 @@ const NOTES = [
 const _NoteList = (props: Props) => {
     const [deleteNote, setDeleteNote] = useState(false);
     const [delButtonNumber, setDelButtonNumber] = useState('');
+    const [key, setKey] = useState(1);
     useEffect(() => {
         fetch();
-    }, []);
+    }, props.userInfo);
     const fetch = () => {
-        props.getNoteList(props.userInfo);
+        props.userInfo && axios.get('https://challenge.pushe.co/api/v1/notes'
+            , {
+                headers: {
+                    'Authorization': `jwt ${props.userInfo}`
+                }
+            }
+        )
+            .then((response) => {
+                props.getNoteList({ payload: response.data })
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
     }
+
     const DelButton = (index) => {
         (deleteNote) ? setDeleteNote(false) : setDeleteNote(true);
         setDelButtonNumber(index);
     }
     const removeNote = (id) => {
-        discardNote(id);
+        discardNote({ id: id, token: props.userInfo })
+            .then(res => {
+                alert('the note is removed successfully!');
+                fetch();
+                setKey((key === 1) ? 2 : 1);
+            }).catch(e => {
+                console.log(e);
+            })
     }
     return <NoteListContainer>
-        {NOTES.map((note, index) => {
+        {props.notes && props.notes.map((note, index) => {
             return <NoteListBox key={index} onClick={() => { DelButton(index) }}>
                 <NoteBoxTitle>{note.title}</NoteBoxTitle>
                 <NotesBoxContent>{note.content}</NotesBoxContent>
@@ -60,7 +83,7 @@ const _NoteList = (props: Props) => {
                     <Dote />
                     <Dote />
                     <Dote />
-                    <DeleteButton open={(delButtonNumber == index && deleteNote) ? true : false} onClick={() => { removeNote(note.id) }}>Delete</DeleteButton>
+                    <DeleteButton open={(delButtonNumber == index && deleteNote) ? true : false} onClick={() => { removeNote(note._id) }}>Delete</DeleteButton>
                 </DoteWrapper>
             </NoteListBox>
         })}
@@ -73,8 +96,8 @@ const mapDispatchToProps = dispatch => {
 };
 const mapStateToProps = (state, props) => {
     return {
-        notes: state.note,
-        userInfo: state.user
+        notes: state.note.noteList,
+        userInfo: state.user.userInfo
     };
 };
 

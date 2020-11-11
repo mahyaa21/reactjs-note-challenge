@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { saveNote } from '../../api/Srvc/noteSrvc';
+import { connect } from "react-redux";
+import axios from 'axios';
+import {
+    getNoteList,
+} from "../../redux/Actions";
 import {
     NoteBoxContainer,
     NoteTitle,
@@ -24,17 +29,37 @@ const _AddNote = (props: Props) => {
             title: title,
             content: content
         }
-        saveNote(note)
-        .then(res => {
-            alert('the note saved successfully!');
-        }).catch(error=>{
-            console.log(error);
-        })
+        saveNote({ note: note, token: props.userInfo })
+            .then(res => {
+                alert('the note saved successfully!');
+                fetch();
+                setTitle('');
+                setContent('');
+                setAddNote(false);
+            }).catch(error => {
+                console.log(error);
+            })
     }
     const discardNote = () => {
         setTitle('');
         setContent('');
         setAddNote(false);
+    }
+    const fetch = () => {
+        props.userInfo && axios.get('https://challenge.pushe.co/api/v1/notes'
+            , {
+                headers: {
+                    'Authorization': `jwt ${props.userInfo}`
+                }
+            }
+        )
+            .then((response) => {
+                props.getNoteList({ payload: response.data })
+            })
+            .catch(error => {
+                console.log(error);
+            })
+
     }
     return <AddNoteContainer>
         <NoteContent onChange={onNoteChange} name={'content'} value={content} placeholder={'Take a note ...'} />
@@ -51,4 +76,17 @@ const _AddNote = (props: Props) => {
         </NoteBoxContainer>}
     </AddNoteContainer>
 }
-export default _AddNote;
+const mapDispatchToProps = dispatch => {
+    return {
+        getNoteList: (data) => dispatch(getNoteList(data)),
+    };
+};
+const mapStateToProps = (state, props) => {
+    return {
+        notes: state.note.noteList,
+        userInfo: state.user.userInfo
+    };
+};
+
+const AddNote = connect(mapStateToProps)(_AddNote)
+export default AddNote;

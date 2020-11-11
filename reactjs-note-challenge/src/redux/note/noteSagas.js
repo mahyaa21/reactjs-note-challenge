@@ -12,13 +12,13 @@ import {
 
 import { getNoteList } from "../../api/Srvc/noteSrvc";
 
-
 function* loadNoteList(action) {
     try {
-        const res = yield call(getNoteList, action.data);
+        const res = yield call(() => getNoteList(action.data), action.data);
+        console.log('reeeerrrssss', res);
         yield put({
             type: LOAD_NOTE_LIST_SUCCESS,
-            data: { payload: res.data, params: action }
+            data: { payload: res.data }
         });
     } catch (error) {
         yield put({

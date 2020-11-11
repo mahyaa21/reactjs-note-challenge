@@ -3,7 +3,7 @@ import noteSagas from './note/noteSagas';
 import userSaga from './user/userSagas';
 export default function* RootSaga() {
   yield all([
-    ...noteSagas(),
+    // ...noteSagas(),
     ...userSaga()
   ]);
 }

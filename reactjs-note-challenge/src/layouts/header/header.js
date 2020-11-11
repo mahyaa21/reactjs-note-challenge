@@ -23,7 +23,6 @@ const _Header = (props: Props) => {
                 password: '123456789'
             });
             const data = await response;
-            console.log('header', data.data.token, props.loginUserAction({ payload: data.data.token }))
             props.loginUserAction({ payload: data.data.token })
             return data;
         } catch (e) {

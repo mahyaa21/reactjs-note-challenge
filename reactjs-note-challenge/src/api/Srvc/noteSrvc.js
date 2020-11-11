@@ -5,12 +5,12 @@ export const saveNote = (data: any) => {
   return new Promise((resolve,reject) => {
     axios.post('https://challenge.pushe.co/api/v1/notes',
       {
-        title: data.title,
-        content: data.content
+        title: data.note.title,
+        content: data.note.content
       }
       , {
         headers: {
-          'Authorization': `jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDQ5NDU3NzgsImVtYWlsIjoibWFoeWFrYTEyQGdtYWlsLmNvbSIsImlhdCI6MTYwNDk0MjE3OH0.gTCuYVpQut9qPJsLUYyPC5EyX74e-XNvK7ASAt2Aeno`
+          'Authorization': `jwt ${data.token}`
         }
       }
     )
@@ -21,36 +21,52 @@ export const saveNote = (data: any) => {
   })
 
 }
+export const getNoteList = (data: any) => {
 
-export const getNoteList = async (data: any) => {
-  try {
-    const response = await axios.get('https://challenge.pushe.co/api/v1/notes', {
-      headers: {
-        'Authorization': `jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDQ5NDE4MjEsImVtYWlsIjoibWFoeWFrYTEyQGdtYWlsLmNvbSIsImlhdCI6MTYwNDkzODIyMX0.1i9L4zuHm7yYNC-MoHJyO2qa62KFBCz9UNJ9oTpyy7o`
+  return new Promise((resolve,reject) => {
+    axios.get('https://challenge.pushe.co/api/v1/notes'
+      , {
+        headers: {
+          'Authorization': `jwt ${data.payload}`
+        }
       }
-    }
-    );
-    const data = await response;
-    console.log('user srvc', data)
-    return data;
-  } catch (e) {
-    console.log(e)
-  }
+    )
+    .then((response) => response)
+    .then(resolve)
+    .then(reject)
+    .catch((response) => Promise.resolve(response.data))
+  })
+
 }
 
+// export const getNoteList = async (data: any) => {
+//   try {
+//     const response = await axios.get('https://challenge.pushe.co/api/v1/notes', {
+//       headers: {
+//         'Authorization': `jwt ${data.payload}`
+//       }
+//     }
+//     );
+//     const data = await response;
+//     console.log('user srvc', data)
+//     return data;
+//   } catch (e) {
+//     console.log(e)
+//   }
+// }
+
 export const discardNote = async (data: any) => {
-  try {
-    const response = await axios.get(`https://challenge.pushe.co/api/v1/notes/${data.id}`, {
-      headers: {
-        'Authorization': `jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDQ5NDE4MjEsImVtYWlsIjoibWFoeWFrYTEyQGdtYWlsLmNvbSIsImlhdCI6MTYwNDkzODIyMX0.1i9L4zuHm7yYNC-MoHJyO2qa62KFBCz9UNJ9oTpyy7o`
+  return new Promise((resolve,reject) => {
+    axios.delete(`https://challenge.pushe.co/api/v1/notes/${data.id}`
+      , {
+        headers: {
+          'Authorization': `jwt ${data.token}`
+        }
       }
-    }
-    );
-    const data = await response;
-    alert('the note is removed successfully!');
-    console.log('user srvc', data)
-    return data;
-  } catch (e) {
-    console.log(e)
-  }
+    )
+    .then((response) => Promise.resolve(response))
+    .then(resolve)
+    .then(reject)
+    .catch((response) => Promise.resolve(response))
+  })
 }
