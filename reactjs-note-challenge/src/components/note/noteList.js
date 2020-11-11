@@ -1,9 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { connect, useStore } from "react-redux";
-import {
-    getNoteList,
-} from "../../redux/Actions";
+import React, { useState } from 'react';
+import { connect } from "react-redux";
 import { discardNote } from '../../api/Srvc/noteSrvc';
 import {
     NoteListContainer,
@@ -14,52 +10,10 @@ import {
     Dote,
     DeleteButton
 } from './note.style';
-const NOTES = [
-    {
-        title: 'salam',
-        content: 'khooobbiii'
-    },
-    {
-        title: 'mersi',
-        content: 'mamnoon'
-    },
-    {
-        title: 'mersi',
-        content: 'mamnoon'
-    },
-    {
-        title: 'mersi',
-        content: 'mamnoon'
-    },
-    {
-        title: 'mersi',
-        content: 'mamnoon'
-    }
-]
+
 const _NoteList = (props: Props) => {
     const [deleteNote, setDeleteNote] = useState(false);
     const [delButtonNumber, setDelButtonNumber] = useState('');
-    const [key, setKey] = useState(1);
-    useEffect(() => {
-        fetch();
-    }, props.userInfo);
-    const fetch = () => {
-        props.userInfo && axios.get('https://challenge.pushe.co/api/v1/notes'
-            , {
-                headers: {
-                    'Authorization': `jwt ${props.userInfo}`
-                }
-            }
-        )
-            .then((response) => {
-                props.getNoteList({ payload: response.data })
-            })
-            .catch(error => {
-                console.log(error);
-            })
-
-    }
-
     const DelButton = (index) => {
         (deleteNote) ? setDeleteNote(false) : setDeleteNote(true);
         setDelButtonNumber(index);
@@ -68,8 +22,7 @@ const _NoteList = (props: Props) => {
         discardNote({ id: id, token: props.userInfo })
             .then(res => {
                 alert('the note is removed successfully!');
-                fetch();
-                setKey((key === 1) ? 2 : 1);
+                props.fetch();
             }).catch(e => {
                 console.log(e);
             })
@@ -89,17 +42,11 @@ const _NoteList = (props: Props) => {
         })}
     </NoteListContainer >
 }
-const mapDispatchToProps = dispatch => {
-    return {
-        getNoteList: (data) => dispatch(getNoteList(data)),
-    };
-};
 const mapStateToProps = (state, props) => {
     return {
-        notes: state.note.noteList,
         userInfo: state.user.userInfo
     };
 };
 
-const NoteList = connect(mapStateToProps, mapDispatchToProps)(_NoteList)
+const NoteList = connect(mapStateToProps)(_NoteList)
 export default NoteList;

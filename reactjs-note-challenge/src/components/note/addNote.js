@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { saveNote } from '../../api/Srvc/noteSrvc';
 import { connect } from "react-redux";
-import axios from 'axios';
-import {
-    getNoteList,
-} from "../../redux/Actions";
 import {
     NoteBoxContainer,
     NoteTitle,
@@ -32,7 +28,7 @@ const _AddNote = (props: Props) => {
         saveNote({ note: note, token: props.userInfo })
             .then(res => {
                 alert('the note saved successfully!');
-                fetch();
+                props.fetch();
                 setTitle('');
                 setContent('');
                 setAddNote(false);
@@ -44,22 +40,6 @@ const _AddNote = (props: Props) => {
         setTitle('');
         setContent('');
         setAddNote(false);
-    }
-    const fetch = () => {
-        props.userInfo && axios.get('https://challenge.pushe.co/api/v1/notes'
-            , {
-                headers: {
-                    'Authorization': `jwt ${props.userInfo}`
-                }
-            }
-        )
-            .then((response) => {
-                props.getNoteList({ payload: response.data })
-            })
-            .catch(error => {
-                console.log(error);
-            })
-
     }
     return <AddNoteContainer>
         <NoteContent onChange={onNoteChange} name={'content'} value={content} placeholder={'Take a note ...'} />
@@ -76,14 +56,9 @@ const _AddNote = (props: Props) => {
         </NoteBoxContainer>}
     </AddNoteContainer>
 }
-const mapDispatchToProps = dispatch => {
-    return {
-        getNoteList: (data) => dispatch(getNoteList(data)),
-    };
-};
+
 const mapStateToProps = (state, props) => {
     return {
-        notes: state.note.noteList,
         userInfo: state.user.userInfo
     };
 };
