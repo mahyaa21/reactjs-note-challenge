@@ -21,7 +21,7 @@ const enhancer = composeEnhancers(
     // other store enhancers if any
 );
 export const store = createStore(
-    rootReducer,
+    rootReducer(),
     initialState,
     enhancer,
     // applyMiddleware(sagaMiddleware)
